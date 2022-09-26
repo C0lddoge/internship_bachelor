@@ -1,0 +1,9 @@
+
+trunc = 2.5
+mc_moves = 500000
+energy_steps = 10
+ xyz_steps = 100
+pressure_steps = 10
+N = [216]
+density = 0.7
+T = 1.4
