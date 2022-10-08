@@ -27,7 +27,7 @@ def equil_check(data,parts):
 
 def A(data):
     O = data[:,1]
-    k = np.array(list(set(np.logspace(0,np.log(1000),num = 150, dtype = int, base = np.e))))
+    k = np.array(sorted(list(set(np.logspace(0,np.log(1000),num = 150, dtype = int, base = np.e)))))
     O_i = np.mean(O)
     O_i_2 = np.mean(O**2)
     
@@ -42,7 +42,8 @@ def A(data):
      #   O_k[i] = np.mean(O*np.roll(O,k[i]))
     A = (O_k-O_i*O_i)/(O_i_2-O_i*O_i)
 
-
+    print(k)
+    print(A)
     return k,A
 
 def A_time(A):

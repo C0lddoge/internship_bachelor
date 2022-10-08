@@ -21,6 +21,7 @@ def rad_frame(frame,dr,rho):
         #        counter += 1 
         
     hist, edges= np.histogram(r_arr,bins,range = (0,L/2))
+    hist = 2*hist
 
     r = (edges[:-1]+edges[1:])/2
     norm = 4*np.pi*r**2*dr*rho*N_total
