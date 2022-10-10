@@ -51,7 +51,7 @@ def read_xyz(xyz_file,start_frame,end_frame):
                 if i > eframe_line:
 
                     break
-        types = np.loadtxt(xyz_file,skiprows = 2, max_rows = frame_line-2,usecols = 0)
+        types = np.loadtxt(xyz_file,skiprows = 2, max_rows = frame_line-2,usecols = 0, dtype = int)
         
     return data,types
                 

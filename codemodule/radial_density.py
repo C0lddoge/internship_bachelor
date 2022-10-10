@@ -4,9 +4,10 @@ from .lennard_jones_v2 import d_matrix
 import numba as nb
 import codemodule as cm
 from scipy import integrate
-
+import itertools
 def rad_frame(frame,dr,rho):
-    frame = frame.T
+    #frame = frame.T
+    print(frame[0])
     N_total = np.shape(frame)[1]
     L = (N_total/rho)**(1/3)
     d_arr = np.sqrt(d_matrix(frame,L))
@@ -41,6 +42,29 @@ def radial_dist(xyz,dr,rho):
 
     return r,avg_g
 
+def radial_dist_types(frames,types,dr,rho):
+    frames = np.transpose(frames)
+    N_total = np.shape(frames)[1]
+    L = (N_total/rho)**(1/3)
+    d_arr = np.sqrt(d_matrix(frames,L))
+    unique, counts = np.unique(types, return_counts = True)
+    combinations = [(a, b) for idx, a in enumerate(unique) for b in unique[idx + 1:]]
+    d_types = []
+    for i in range(len(combinations)):
+        arr = np.zeros((N_total,N_total))
+        for j in range(N_total):
+            for k in range(N_total):
+                part_types = [types[i],types[j]]
+                if part_types == combinations[i]:
+                    arr[i,j] = d_arr[i,j]
+        d_types.append(arr)
+
+    print(d_types)
+
+                    
+
+
+    return combinations 
 def pressure(g,r,rho,eps,sig,types,trunc):
     u_p = np.zeros(len(r))
     for i in range(len(r)):
