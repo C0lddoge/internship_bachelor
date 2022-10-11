@@ -7,7 +7,6 @@ from scipy import integrate
 import itertools
 def rad_frame(frame,dr,rho):
     #frame = frame.T
-    print(frame[0])
     N_total = np.shape(frame)[1]
     L = (N_total/rho)**(1/3)
     d_arr = np.sqrt(d_matrix(frame,L))
@@ -42,29 +41,76 @@ def radial_dist(xyz,dr,rho):
 
     return r,avg_g
 
-def radial_dist_types(frames,types,dr,rho):
-    frames = np.transpose(frames)
+def combinations(array):
+    combinations = []
+    for i in range(len(array)):
+        for j in range(len(array)):
+            combinations.append([array[i],array[j]])
+
+    return combinations 
+        
+
+def radial_frames_types(frames,pairs,counts,types,dr,rho):
+    frames = frames.T
     N_total = np.shape(frames)[1]
     L = (N_total/rho)**(1/3)
+    bins = int(L/(2*dr))
     d_arr = np.sqrt(d_matrix(frames,L))
-    unique, counts = np.unique(types, return_counts = True)
-    combinations = [(a, b) for idx, a in enumerate(unique) for b in unique[idx + 1:]]
+    N_pair = len(pairs)
+    #pair_counts = []
+    #for i in range(N_pair):
+        #pair_counts.append(counts[pairs[i][0]]+counts[pairs[i][1]])
+
+
     d_types = []
-    for i in range(len(combinations)):
+    for i in range(N_pair):
         arr = np.zeros((N_total,N_total))
         for j in range(N_total):
             for k in range(N_total):
-                part_types = [types[i],types[j]]
-                if part_types == combinations[i]:
+                part_types = [types[j],types[k]]
+                if part_types == pairs[i]:
                     arr[i,j] = d_arr[i,j]
         d_types.append(arr)
+    for i in range(N_pair):
+        d_types[i] = np.array(list(d_types[i][d_types[i] != 0]))
+    
+    g_pair = [] 
+    r_pair = []
 
-    print(d_types)
+    for i in range(N_pair):
+        hist,edges = np.histogram(d_types[i],bins, range = (0,L/2))
+        hist = 2*hist
+        r = (edges[:-1]+edges[1:])/2
+        norm = 4*np.pi*r**2*dr*rho*N_total
+        g = hist/norm
+        g_pair.append(g)
+        r_pair.append(r)
 
-                    
+
+    return r_pair,g_pair
 
 
-    return combinations 
+def rad_dist_types(frames,types,dr,rho):
+    g_pair_frame = []
+    unique, counts = np.unique(types, return_counts = True)
+    pairs = combinations(unique)
+    for i in range(len(frames)):
+        r_pair,g_pair = radial_frames_types(frames[i],pairs,counts,types,dr,rho)
+        g_pair_frame.append(g_pair)
+    g_pair_avg =[]
+    N_pair = len(pairs)
+    for j in range(N_pair):
+        helper = []
+        for k in range(len(frames)):
+            helper.append(g_pair_frame[k][j])
+            print(g_pair_frame[k][j])
+        g_pair_avg.append(np.mean(helper,axis=0))
+    
+    
+    return pairs,r_pair,g_pair_avg
+
+
+
 def pressure(g,r,rho,eps,sig,types,trunc):
     u_p = np.zeros(len(r))
     for i in range(len(r)):
