@@ -4,7 +4,6 @@ from .lennard_jones_v2 import d_matrix
 import numba as nb
 import codemodule as cm
 from scipy import integrate
-import itertools
 def rad_frame(frame,dr,rho):
     #frame = frame.T
     N_total = np.shape(frame)[1]
@@ -64,15 +63,13 @@ def radial_frames_types(frames,pairs,counts,types,dr,rho):
 
     d_types = []
     for i in range(N_pair):
-        arr = np.zeros((N_total,N_total))
+        arr = []
         for j in range(N_total):
             for k in range(N_total):
                 part_types = [types[j],types[k]]
-                if part_types == pairs[i]:
-                    arr[i,j] = d_arr[i,j]
+                if part_types == pairs[i] and d_arr[i,j] != 0:
+                    arr.append(d_arr[i,j])
         d_types.append(arr)
-    for i in range(N_pair):
-        d_types[i] = np.array(list(d_types[i][d_types[i] != 0]))
     
     g_pair = [] 
     r_pair = []
