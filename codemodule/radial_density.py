@@ -20,7 +20,7 @@ def rad_frame(frame,dr,rho):
         #        counter += 1 
         
     hist, edges= np.histogram(r_arr,bins,range = (0,L/2))
-    hist = 2*hist
+    hist = hist
     
     V = 4/3 * np.pi*(edges[1:]**3-edges[:-1]**3)
     r = (edges[:-1]+edges[1:])/2
