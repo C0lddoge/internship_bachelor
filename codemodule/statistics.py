@@ -56,9 +56,24 @@ def A_time(A):
 
     return tau,tau_final 
 
+def bin_ana_input(data):
+    # does bin ana to plot different boxlengths to let you select one
+    N = len(data)
+    Nb = [2,5,10,20,50,100]
+    plot = []
+    for i in Nb:
+        plot.append(bin_ana(data,i))
+    plt.plot(Nb,plot)
+    plt.show()
+    input_nb = int(input())
+    return input_nb
+
 
 def bin_ana(data,Nb):
-    O = data[:,1]
+    if len(np.shape(data)) == 2:  #careful this will fuck you if you put your data has 3 columns or something!!! make sure you want the 2nd column to be used
+        O = data[:,1]
+    else:
+        O = data[:]
     N = len(O)
     k = int(N/Nb) #maybe need to properly do this
     O_bn = []
@@ -94,7 +109,6 @@ def main():
     plt.plot(k,A_done)
     plt.plot(k,tau)
     plt.show()
-
 
 if __name__ == '__main__':
     main()
