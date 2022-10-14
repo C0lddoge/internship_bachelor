@@ -102,7 +102,7 @@ if switch == 1:
        plt.savefig(plot_path(plot_name), format = 'eps')
        plt.clf()
        cm.write_xy(result_path(file_name),kmax,tau)
-       N_eff = len(data[:,1])/2*tau_final
+       N_eff = len(data[:,1])/(2*tau_final)
        error = np.sqrt(np.var(data[:,1])/N_eff)
     if not A_k:
         Nb = [2,5,10,20,50,100,200,500,1000,2000,5000,10000]

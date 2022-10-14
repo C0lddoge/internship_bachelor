@@ -64,14 +64,14 @@ def simulate(N, density,T,xyz_switch,e_switch,p_switch):
     pressure_file = sim_path +'/pressure.dat'
 
     beta = 1.0/T
-    eps = np.array([[1,0],[0,1]])
-    sig = np.array([[1,0],[0,1]])
+    eps = np.array([[0,0],[0,1]])
+    sig = np.array([[0,0],[0,1]])
     trunc = 2.5
-    mc_moves = 10000
+    mc_moves = 500000
     max_displacement = 0.5
-    energy_steps = 10
-    w_steps = 10
-    p_steps = 10
+    energy_steps = 100
+    w_steps = 100
+    p_steps = 100
     with open(sim_path + '/log.dat', 'w') as out_f:
         out_f.write('\ntrunc = {:}\nmc_moves = {:}\nenergy_steps = {:}\n xyz_steps = {:}\npressure_steps = {:}\nN = {:}\ndensity = {:}\nT = {:}\n'.format(trunc,mc_moves,energy_steps,w_steps,p_steps,N, density,T))  
     out_f.close()

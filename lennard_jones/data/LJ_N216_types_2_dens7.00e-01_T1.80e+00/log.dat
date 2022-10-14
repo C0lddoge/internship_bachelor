@@ -1,9 +1,9 @@
 
 trunc = 2.5
-mc_moves = 10000
-energy_steps = 10
- xyz_steps = 10
-pressure_steps = 10
+mc_moves = 1000000
+energy_steps = 100
+ xyz_steps = 100
+pressure_steps = 100
 N = [108, 108]
 density = 0.7
 T = 1.8

@@ -21,9 +21,10 @@ def rad_frame(frame,dr,rho):
         
     hist, edges= np.histogram(r_arr,bins,range = (0,L/2))
     hist = 2*hist
-
+    
+    V = 4/3 * np.pi*(edges[1:]**3-edges[:-1]**3)
     r = (edges[:-1]+edges[1:])/2
-    norm = 4*np.pi*r**2*dr*rho*N_total
+    norm = V*rho*N_total
     g = hist/norm  
 
     
@@ -56,9 +57,9 @@ def radial_frames_types(frames,pairs,counts,types,dr,rho):
     bins = int(L/(2*dr))
     d_arr = np.sqrt(d_matrix(frames,L))
     N_pair = len(pairs)
-    #pair_counts = []
-    #for i in range(N_pair):
-        #pair_counts.append(counts[pairs[i][0]]+counts[pairs[i][1]])
+    pair_counts = []
+    for i in range(N_pair):
+        pair_counts.append(counts[pairs[i][0]]*counts[pairs[i][1]])
 
 
     d_types = []
@@ -67,8 +68,8 @@ def radial_frames_types(frames,pairs,counts,types,dr,rho):
         for j in range(N_total):
             for k in range(N_total):
                 part_types = [types[j],types[k]]
-                if part_types == pairs[i] and d_arr[i,j] != 0:
-                    arr.append(d_arr[i,j])
+                if part_types == pairs[i] and j != k :
+                    arr.append(d_arr[j,k])
         d_types.append(arr)
     
     g_pair = [] 
@@ -76,9 +77,9 @@ def radial_frames_types(frames,pairs,counts,types,dr,rho):
 
     for i in range(N_pair):
         hist,edges = np.histogram(d_types[i],bins, range = (0,L/2))
-        hist = 2*hist
         r = (edges[:-1]+edges[1:])/2
-        norm = 4*np.pi*r**2*dr*rho*N_total
+        V = 4/3 * np.pi*(edges[1:]**3-edges[:-1]**3)
+        norm = V*pair_counts[i]/L**3
         g = hist/norm
         g_pair.append(g)
         r_pair.append(r)
@@ -100,7 +101,6 @@ def rad_dist_types(frames,types,dr,rho):
         helper = []
         for k in range(len(frames)):
             helper.append(g_pair_frame[k][j])
-            print(g_pair_frame[k][j])
         g_pair_avg.append(np.mean(helper,axis=0))
     
     
