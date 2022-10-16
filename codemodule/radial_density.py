@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from .lennard_jones_v2 import d_matrix
 import numba as nb
-import codemodule as cm
+from .statistics import bin_ana_input, bin_ana
 from scipy import integrate
 def rad_frame(frame,dr,rho):
     #frame = frame.T
@@ -26,9 +26,29 @@ def rad_frame(frame,dr,rho):
     r = (edges[:-1]+edges[1:])/2
     norm = V*rho*N_total
     g = hist/norm  
-
     
     return r,g
+
+def g_r_error(g_series):
+    #returns error array for each bin
+
+    Nframe= len(g_series)
+    Nbin = len(g_series[0])
+    series_matrix = np.zeros((Nframe,Nbin))
+    for i in range(Nframe):
+        for j in range(Nbin):
+            series_matrix[i,j] = g_series[i][j]
+
+    rand_bin = np.random.randint(0,Nbin-1)
+    Nb = bin_ana_input(series_matrix[:,rand_bin])
+    error = []
+    for i in range(Nbin):
+        error.append(np.sqrt(bin_ana(series_matrix[:,i],Nb)))
+
+    return error
+
+
+
 
 def radial_dist(xyz,dr,rho):
     #xyz as a list of all xyz frames
@@ -36,10 +56,11 @@ def radial_dist(xyz,dr,rho):
     for i in range(len(xyz)):
         r,g = rad_frame(xyz[i],dr,rho)
         g_list.append(g)
-
+    
+    error = g_r_error(g_list)
     avg_g = np.mean(g_list,axis = 0)
 
-    return r,avg_g
+    return r,avg_g,error
 
 def combinations(array):
     combinations = []
@@ -97,14 +118,16 @@ def rad_dist_types(frames,types,dr,rho):
         g_pair_frame.append(g_pair)
     g_pair_avg =[]
     N_pair = len(pairs)
+    error = []
     for j in range(N_pair):
         helper = []
         for k in range(len(frames)):
             helper.append(g_pair_frame[k][j])
+        error.append(g_r_error(helper))
         g_pair_avg.append(np.mean(helper,axis=0))
     
     
-    return pairs,r_pair,g_pair_avg
+    return pairs,r_pair,g_pair_avg,error
 
 
 

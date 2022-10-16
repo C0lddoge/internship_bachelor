@@ -1,9 +1,0 @@
-
-trunc = 2.5
-mc_moves = 10000
-energy_steps = 10
- xyz_steps = 10
-pressure_steps = 10
-N = [3, 3]
-density = 1.0
-T = 1.0
